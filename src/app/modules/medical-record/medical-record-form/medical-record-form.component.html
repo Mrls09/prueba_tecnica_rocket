@@ -1,0 +1,73 @@
+<!-- medical-record-form.component.html -->
+<div class="container mt-4">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h3>{{ isEditMode ? 'Editar' : 'Registrar' }} Consulta Médica</h3>
+      </div>
+      <div class="card-body">
+        <!-- Spinner de carga -->
+        <div *ngIf="loading" class="d-flex justify-content-center my-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+        
+        <!-- Información de la cita -->
+        <div *ngIf="appointment && !loading" class="alert alert-info mb-4">
+          <h5>Información de la Cita:</h5>
+          <p><strong>Fecha:</strong> {{ appointment.appointmentDate | date:'medium' }}</p>
+          <p><strong>Doctor:</strong> {{ appointment.doctor.name }}</p>
+          <p><strong>Paciente:</strong> {{ appointment.patient.name }}</p>
+        </div>
+        
+        <!-- Formulario -->
+        <form [formGroup]="recordForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+          <div class="mb-3">
+            <label for="diagnosis" class="form-label">Diagnóstico *</label>
+            <textarea 
+              class="form-control" 
+              id="diagnosis" 
+              formControlName="diagnosis"
+              rows="4"
+              [ngClass]="{'is-invalid': submitted && f['diagnosis'].errors}"
+            ></textarea>
+            <div *ngIf="submitted && f['diagnosis'].errors" class="invalid-feedback">
+              <div *ngIf="f['diagnosis'].errors['required']">El diagnóstico es obligatorio</div>
+              <div *ngIf="f['diagnosis'].errors['maxlength']">El diagnóstico no puede tener más de 500 caracteres</div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="treatment" class="form-label">Tratamiento Recomendado *</label>
+            <textarea 
+              class="form-control" 
+              id="treatment" 
+              formControlName="treatment"
+              rows="4"
+              [ngClass]="{'is-invalid': submitted && f['treatment'].errors}"
+            ></textarea>
+            <div *ngIf="submitted && f['treatment'].errors" class="invalid-feedback">
+              <div *ngIf="f['treatment'].errors['required']">El tratamiento es obligatorio</div>
+              <div *ngIf="f['treatment'].errors['maxlength']">El tratamiento no puede tener más de 500 caracteres</div>
+            </div>
+          </div>
+          
+          <div class="d-flex justify-content-end mt-4">
+            <button type="button" class="btn btn-secondary me-2" (click)="cancel()">Cancelar</button>
+            <button type="submit" class="btn btn-primary" [disabled]="loading">
+              <span *ngIf="loading" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+              {{ isEditMode ? 'Actualizar' : 'Guardar' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Modal de estado -->
+    <app-status-modal
+      [showModal]="showStatusModal"
+      [message]="statusMessage"
+      [success]="statusSuccess"
+      (close)="closeStatusModal()">
+    </app-status-modal>
+  </div>

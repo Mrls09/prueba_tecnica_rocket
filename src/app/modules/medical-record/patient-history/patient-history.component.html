@@ -1,0 +1,69 @@
+<!-- patient-history.component.html -->
+<div class="container mt-4">
+    <h2 class="mb-4">Historial Médico del Paciente</h2>
+    
+    <!-- Selector de paciente -->
+    <div class="card mb-4">
+        <div class="card-body">
+          <form [formGroup]="patientForm">
+            <div class="mb-3">
+              <label for="patientId" class="form-label">Seleccionar Paciente:</label>
+              <select class="form-select" id="patientId" formControlName="patientId">
+                <option value="">-- Seleccione un paciente --</option>
+                <option *ngFor="let p of patients" [value]="p.id">{{ p.name }} - {{ p.age }} años</option>
+              </select>
+            </div>
+          </form>
+        </div>
+      </div>
+    
+    <!-- Spinner de carga -->
+    <div *ngIf="loading" class="d-flex justify-content-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+    
+    <!-- Mensaje de error -->
+    <div *ngIf="error" class="alert alert-danger">
+      {{ error }}
+    </div>
+    
+    <!-- Información del paciente -->
+    <div *ngIf="patient && !loading" class="card mb-4">
+      <div class="card-header bg-info text-white">
+        <h4>Información del Paciente</h4>
+      </div>
+      <div class="card-body">
+        <p><strong>Nombre:</strong> {{ patient.name }}</p>
+        <p><strong>Edad:</strong> {{ patient.age }} años</p>
+        <p *ngIf="patient.medical_history"><strong>Antecedentes Médicos:</strong> {{ patient.medical_history }}</p>
+      </div>
+    </div>
+    
+    <!-- Historial de consultas -->
+    <div *ngIf="!loading && !error" class="card">
+      <div class="card-header bg-primary text-white">
+        <h4>Consultas Médicas</h4>
+      </div>
+      <div class="card-body">
+        <div *ngIf="records.length === 0" class="alert alert-info">
+          No hay registros médicos para este paciente.
+        </div>
+        
+        <div *ngFor="let record of records; let i = index" class="card mb-3">
+          <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Consulta {{ i + 1 }}</h5>
+              <span>{{ record.date | date:'medium' }}</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <p><strong>Doctor:</strong> {{ record.appointment.doctor.name }}</p>
+            <p><strong>Diagnóstico:</strong> {{ record.diagnosis }}</p>
+            <p><strong>Tratamiento:</strong> {{ record.treatment }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

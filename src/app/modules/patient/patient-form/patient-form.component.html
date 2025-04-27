@@ -1,0 +1,80 @@
+<div class="container mt-4">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h3>{{ isEditMode ? 'Editar' : 'Registrar' }} Paciente</h3>
+      </div>
+      <div class="card-body">
+        <!-- Spinner de carga -->
+        <div *ngIf="loading" class="d-flex justify-content-center my-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+        
+        <!-- Formulario -->
+        <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+          <div class="mb-3">
+            <label for="name" class="form-label">Nombre *</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="name" 
+              formControlName="name" 
+              [ngClass]="{'is-invalid': submitted && f['name'].errors}"
+            >
+            <div *ngIf="submitted && f['name'].errors" class="invalid-feedback">
+              <div *ngIf="f['name'].errors['required']">El nombre es obligatorio</div>
+              <div *ngIf="f['name'].errors['minlength']">El nombre debe tener al menos 3 caracteres</div>
+              <div *ngIf="f['name'].errors['maxlength']">El nombre no puede tener más de 100 caracteres</div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="age" class="form-label">Edad *</label>
+            <input 
+              type="number" 
+              class="form-control" 
+              id="age" 
+              formControlName="age"
+              [ngClass]="{'is-invalid': submitted && f['age'].errors}"
+            >
+            <div *ngIf="submitted && f['age'].errors" class="invalid-feedback">
+              <div *ngIf="f['age'].errors['required']">La edad es obligatoria</div>
+              <div *ngIf="f['age'].errors['min']">La edad no puede ser menor a 0</div>
+              <div *ngIf="f['age'].errors['max']">La edad no puede ser mayor a 120</div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="medicalHistory" class="form-label">Antecedentes Médicos</label>
+            <textarea 
+              class="form-control" 
+              id="medicalHistory" 
+              formControlName="medicalHistory"
+              rows="4"
+              [ngClass]="{'is-invalid': submitted && f['medicalHistory'].errors}"
+            ></textarea>
+            <div *ngIf="submitted && f['medicalHistory'].errors" class="invalid-feedback">
+              <div *ngIf="f['medicalHistory'].errors['maxlength']">Los antecedentes médicos no pueden tener más de 500 caracteres</div>
+            </div>
+          </div>
+          
+          <div class="d-flex justify-content-end mt-4">
+            <button type="button" class="btn btn-secondary me-2" (click)="cancel()">Cancelar</button>
+            <button type="submit" class="btn btn-primary" [disabled]="loading">
+              <span *ngIf="loading" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+              {{ isEditMode ? 'Actualizar' : 'Guardar' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Modal de estado -->
+    <app-status-modal
+      [showModal]="showStatusModal"
+      [message]="statusMessage"
+      [success]="statusSuccess"
+      (close)="closeStatusModal()">
+    </app-status-modal>
+  </div>

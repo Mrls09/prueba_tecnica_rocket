@@ -1,0 +1,68 @@
+<!-- doctor-history.component.html -->
+<div class="container mt-4">
+    <h2 class="mb-4">Historial de Consultas del Doctor</h2>
+    
+    <!-- Selector de doctor -->
+    <<div class="card mb-4">
+        <div class="card-body">
+          <form [formGroup]="doctorForm">
+            <div class="mb-3">
+              <label for="doctorId" class="form-label">Seleccionar Doctor:</label>
+              <select class="form-select" id="doctorId" formControlName="doctorId">
+                <option value="">-- Seleccione un doctor --</option>
+                <option *ngFor="let d of doctors" [value]="d.id">{{ d.name }} {{ d.specialty ? '- ' + d.specialty : '' }}</option>
+              </select>
+            </div>
+          </form>
+        </div>
+      </div>
+    
+    <!-- Spinner de carga -->
+    <div *ngIf="loading" class="d-flex justify-content-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+    
+    <!-- Mensaje de error -->
+    <div *ngIf="error" class="alert alert-danger">
+      {{ error }}
+    </div>
+    
+    <!-- Información del doctor -->
+    <div *ngIf="doctor && !loading" class="card mb-4">
+      <div class="card-header bg-info text-white">
+        <h4>Información del Doctor</h4>
+      </div>
+      <div class="card-body">
+        <p><strong>Nombre:</strong> {{ doctor.name }}</p>
+        <p *ngIf="doctor.specialty"><strong>Especialidad:</strong> {{ doctor.specialty }}</p>
+      </div>
+    </div>
+    
+    <!-- Historial de consultas -->
+    <div *ngIf="!loading && !error" class="card">
+      <div class="card-header bg-primary text-white">
+        <h4>Consultas Realizadas</h4>
+      </div>
+      <div class="card-body">
+        <div *ngIf="records.length === 0" class="alert alert-info">
+          No hay registros de consultas para este doctor.
+        </div>
+        
+        <div *ngFor="let record of records; let i = index" class="card mb-3">
+          <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Consulta {{ i + 1 }}</h5>
+              <span>{{ record.date | date:'medium' }}</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <p><strong>Paciente:</strong> {{ record.appointment.patient.name }}</p>
+            <p><strong>Diagnóstico:</strong> {{ record.diagnosis }}</p>
+            <p><strong>Tratamiento:</strong> {{ record.treatment }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

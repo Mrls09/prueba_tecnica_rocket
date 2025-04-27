@@ -1,0 +1,19 @@
+<div *ngIf="showModal" class="modal-wrapper">
+  <div class="modal-dialog" style="z-index: 1051; position: relative;">
+    <div class="modal-content">
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title">{{ title }}</h5>
+        <button type="button" class="btn-close" (click)="onCancel()"></button>
+      </div>
+      <div class="modal-body">
+        <p>{{ message }}</p>
+        <p class="text-danger"><small>Esta acción no se puede deshacer.</small></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">{{ cancelButtonText }}</button>
+        <button type="button" class="btn" [ngClass]="confirmButtonClass" (click)="onConfirm()">{{ confirmButtonText }}</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop"></div>
+</div>

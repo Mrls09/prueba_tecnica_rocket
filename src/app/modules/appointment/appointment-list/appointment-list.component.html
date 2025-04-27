@@ -1,0 +1,74 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Listado de Citas Médicas</h2>
+    <button class="btn btn-primary" (click)="createAppointment()">
+      <i class="bi bi-plus-circle me-2"></i>Nueva Cita
+    </button>
+  </div>
+
+  <!-- Spinner de carga -->
+  <div *ngIf="loading" class="d-flex justify-content-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <!-- Tabla de citas -->
+  <div *ngIf="!loading && !error" class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Fecha y Hora</th>
+          <th scope="col">Doctor</th>
+          <th scope="col">Paciente</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="appointments.length > 0; else noData">
+          <tr *ngFor="let appointment of appointments; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ formatDate(appointment.appointmentDate) }}</td>
+            <td>{{ appointment.doctor.name }}</td>
+            <td>{{ appointment.patient.name }}</td>
+            <td>
+              <!-- En la sección de acciones de la tabla de citas -->
+              <div class="btn-group" role="group">
+                <button class="btn btn-sm btn-outline-primary" (click)="editAppointment(appointment.id!)">
+                  <i class="bi bi-pencil-square"></i> Editar
+                </button>
+                <button class="btn btn-sm btn-outline-success" (click)="registerMedicalRecord(appointment.id!)">
+                  <i class="bi bi-clipboard-plus"></i> Registrar Consulta
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="openDeleteConfirmation(appointment)">
+                  <i class="bi bi-trash"></i> Eliminar
+                </button>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-template #noData>
+          <tr>
+            <td colspan="5" class="text-center">No hay citas registradas</td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal de confirmación -->
+  <app-confirm-modal [showModal]="showConfirmModal" [message]="confirmMessage" title="Confirmar eliminación"
+    confirmButtonText="Eliminar" (confirm)="onConfirmDelete()" (cancel)="closeConfirmModal()">
+  </app-confirm-modal>
+
+  <!-- Modal de estado -->
+  <app-status-modal [showModal]="showStatusModal" [message]="statusMessage" [success]="statusSuccess"
+    (close)="closeStatusModal()">
+  </app-status-modal>
+</div>

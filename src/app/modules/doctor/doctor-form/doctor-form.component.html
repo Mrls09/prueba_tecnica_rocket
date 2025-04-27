@@ -1,0 +1,64 @@
+<div class="container mt-4">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h3>{{ isEditMode ? 'Editar' : 'Registrar' }} Médico</h3>
+      </div>
+      <div class="card-body">
+        <!-- Spinner de carga -->
+        <div *ngIf="loading" class="d-flex justify-content-center my-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+        
+        <!-- Formulario -->
+        <form [formGroup]="doctorForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+          <div class="mb-3">
+            <label for="name" class="form-label">Nombre *</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="name" 
+              formControlName="name" 
+              [ngClass]="{'is-invalid': submitted && f['name'].errors}"
+            >
+            <div *ngIf="submitted && f['name'].errors" class="invalid-feedback">
+              <div *ngIf="f['name'].errors['required']">El nombre es obligatorio</div>
+              <div *ngIf="f['name'].errors['minlength']">El nombre debe tener al menos 3 caracteres</div>
+              <div *ngIf="f['name'].errors['maxlength']">El nombre no puede tener más de 100 caracteres</div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="specialty" class="form-label">Especialidad</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="specialty" 
+              formControlName="specialty"
+              [ngClass]="{'is-invalid': submitted && f['specialty'].errors}"
+            >
+            <div *ngIf="submitted && f['specialty'].errors" class="invalid-feedback">
+              <div *ngIf="f['specialty'].errors['maxlength']">La especialidad no puede tener más de 100 caracteres</div>
+            </div>
+          </div>
+          
+          <div class="d-flex justify-content-end mt-4">
+            <button type="button" class="btn btn-secondary me-2" (click)="cancel()">Cancelar</button>
+            <button type="submit" class="btn btn-primary" [disabled]="loading">
+              <span *ngIf="loading" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+              {{ isEditMode ? 'Actualizar' : 'Guardar' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Modal de estado -->
+    <app-status-modal
+      [showModal]="showStatusModal"
+      [message]="statusMessage"
+      [success]="statusSuccess"
+      (close)="closeStatusModal()">
+    </app-status-modal>
+  </div>

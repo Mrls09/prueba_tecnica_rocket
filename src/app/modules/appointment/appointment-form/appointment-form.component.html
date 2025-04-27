@@ -1,0 +1,100 @@
+<div class="container mt-4">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h3>{{ isEditMode ? 'Editar' : 'Agendar' }} Cita Médica</h3>
+      </div>
+      <div class="card-body">
+        <!-- Spinner de carga -->
+        <div *ngIf="loading" class="d-flex justify-content-center my-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+        
+        <!-- Formulario -->
+        <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="appointmentDate" class="form-label">Fecha *</label>
+              <input 
+                type="date" 
+                class="form-control" 
+                id="appointmentDate" 
+                formControlName="appointmentDate" 
+                [ngClass]="{'is-invalid': submitted && f['appointmentDate'].errors}"
+              >
+              <div *ngIf="submitted && f['appointmentDate'].errors" class="invalid-feedback">
+                <div *ngIf="f['appointmentDate'].errors['required']">La fecha es obligatoria</div>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <label for="appointmentTime" class="form-label">Hora *</label>
+              <input 
+                type="time" 
+                class="form-control" 
+                id="appointmentTime" 
+                formControlName="appointmentTime"
+                [ngClass]="{'is-invalid': submitted && f['appointmentTime'].errors}"
+              >
+              <div *ngIf="submitted && f['appointmentTime'].errors" class="invalid-feedback">
+                <div *ngIf="f['appointmentTime'].errors['required']">La hora es obligatoria</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="doctorId" class="form-label">Doctor *</label>
+            <select 
+              class="form-select" 
+              id="doctorId" 
+              formControlName="doctorId"
+              [ngClass]="{'is-invalid': submitted && f['doctorId'].errors}"
+            >
+              <option value="">Seleccione un doctor</option>
+              <option *ngFor="let doctor of doctors" [value]="doctor.id">
+                {{ doctor.name }} {{ doctor.specialty ? '- ' + doctor.specialty : '' }}
+              </option>
+            </select>
+            <div *ngIf="submitted && f['doctorId'].errors" class="invalid-feedback">
+              <div *ngIf="f['doctorId'].errors['required']">Debe seleccionar un doctor</div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="patientId" class="form-label">Paciente *</label>
+            <select 
+              class="form-select" 
+              id="patientId" 
+              formControlName="patientId"
+              [ngClass]="{'is-invalid': submitted && f['patientId'].errors}"
+            >
+              <option value="">Seleccione un paciente</option>
+              <option *ngFor="let patient of patients" [value]="patient.id">
+                {{ patient.name }} - {{ patient.age }} años
+              </option>
+            </select>
+            <div *ngIf="submitted && f['patientId'].errors" class="invalid-feedback">
+              <div *ngIf="f['patientId'].errors['required']">Debe seleccionar un paciente</div>
+            </div>
+          </div>
+          
+          <div class="d-flex justify-content-end mt-4">
+            <button type="button" class="btn btn-secondary me-2" (click)="cancel()">Cancelar</button>
+            <button type="submit" class="btn btn-primary" [disabled]="loading">
+              <span *ngIf="loading" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+              {{ isEditMode ? 'Actualizar' : 'Agendar' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Modal de estado -->
+    <app-status-modal
+      [showModal]="showStatusModal"
+      [message]="statusMessage"
+      [success]="statusSuccess"
+      (close)="closeStatusModal()">
+    </app-status-modal>
+  </div>

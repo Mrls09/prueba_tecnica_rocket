@@ -1,0 +1,17 @@
+<div *ngIf="showModal" class="modal-wrapper">
+    <div class="modal-dialog" style="z-index: 1051; position: relative;">
+      <div class="modal-content">
+        <div class="modal-header" [ngClass]="success ? 'bg-success' : 'bg-danger'">
+          <h5 class="modal-title text-white">{{ modalTitle }}</h5>
+          <button type="button" class="btn-close" (click)="onClose()"></button>
+        </div>
+        <div class="modal-body">
+          <p>{{ message }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="onClose()">{{ buttonText }}</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop"></div>
+  </div>
